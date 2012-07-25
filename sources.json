@@ -1,0 +1,19 @@
+[
+    {"source": "app/utils/hmac-sha1.js"},
+    {"source": "app/utils/hotp.js"},
+    {"source": "app/utils/base32.js"},
+    {"source": "app/utils/account.js"},
+    {"source": "app/assistants/stage-assistant.js"},
+    {
+        "scenes": "main",
+        "source": "app/assistants/main-assistant.js"
+    },
+    {
+        "scenes": "about",
+        "source": "app/assistants/about-assistant.js"
+    },
+    {
+        "scenes": "editAccount",
+        "source": "app/assistants/editAccount-assistant.js"
+    }
+]

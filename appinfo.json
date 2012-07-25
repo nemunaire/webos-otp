@@ -1,0 +1,19 @@
+{
+    "id": "re.nemunai.otp",
+    "version": "1.0.0",
+    "vendor": "Nemunaire",
+    "vendorurl":"http://nemunai.re/",
+    "type": "web",
+    "main": "index.html",
+    "title": "One Time Password",
+    "icon": "icon.png",
+    "smallicon": "iconsmall.png",
+    "theme":"light",
+    "noDeprecatedStyles":true,
+    "support": {
+        "email": {
+            "address": "webos@nemunai.re",
+            "subject": "[OTP] Support"
+        }
+    }
+}
