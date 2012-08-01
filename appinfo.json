@@ -2,14 +2,14 @@
     "id": "re.nemunai.otp",
     "version": "1.0.0",
     "vendor": "Nemunaire",
-    "vendorurl":"http://nemunai.re/",
+    "vendorurl":"http://nemunai.re/webos",
     "type": "web",
     "main": "index.html",
     "title": "One Time Password",
     "icon": "icon.png",
     "smallicon": "iconsmall.png",
-    "theme":"light",
-    "noDeprecatedStyles":true,
+    "theme": "light",
+    "noDeprecatedStyles": true,
     "support": {
         "email": {
             "address": "webos@nemunai.re",

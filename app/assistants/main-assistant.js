@@ -7,12 +7,29 @@ function MainAssistant()
 
     this.accounts = [];
 
+    this.timer = null;
+
     this.addEventHandler = this.addAccount.bind(this);
     this.deleteEventHandler = this.delAccount.bind(this)
 }
 
 MainAssistant.prototype.setup = function()
 {
+    //Setup the menu
+    this.controller.setupWidget(
+        Mojo.Menu.appMenu,
+        { omitDefaultItems: true },
+        {
+            visible: true,
+            items: [
+                Mojo.Menu.editItem,
+                {label: $L('Add account...'), command: 'do-myAddAccount'},
+                {label: $L('About'), command: 'do-myAbout'},
+            ]
+        }
+    )
+
+    //Setup the account list
     this.controller.setupWidget(
         'accountsList',
         {
@@ -77,6 +94,13 @@ MainAssistant.prototype.useDefaultList = function()
 
 MainAssistant.prototype.loadList = function()
 {
+    this.startTimer();
+
+    $('accountsList').mojo.noticeUpdatedItems(0, this.accounts);
+}
+
+MainAssistant.prototype.startTimer = function()
+{
     var minPeriod = 100;
     for (var i = 0; i < this.accounts.length; i++)
     {
@@ -85,37 +109,74 @@ MainAssistant.prototype.loadList = function()
         this.accounts[i].gen()
     }
 
-    $('accountsList').mojo.noticeUpdatedItems(0, this.accounts);
-
     //Refresh all password at the end of the minimal period
-    setTimeout(this.loadList.bind(this), minPeriod * 1000 - new Date().getTime() % (minPeriod * 1000))
+    this.timer = setTimeout(
+        this.loadList.bind(this),
+        minPeriod * 1000 - new Date().getTime() % (minPeriod * 1000)
+    );
+}
+
+MainAssistant.prototype.stopTimer = function()
+{
+    if (this.timer)
+    {
+        clearInterval(this.timer);
+        this.timer = null;
+    }
+}
+
+MainAssistant.prototype.activate = function(event)
+{
+    Mojo.Log.error("reactive");
+    this.loadList();
+}
+
+MainAssistant.prototype.deactivate = function(event)
+{
+    Mojo.Log.error("desactive");
+    this.stopTimer();
 }
 
 MainAssistant.prototype.dbOpenFail = function()
 {
-    Mojo.Controller.errorDialog("Can't open accounts database (#" + result.message + ").");
+    Mojo.Controller.errorDialog(
+        "Can't open accounts database (#" + result.message + ").");
 };
 
-MainAssistant.prototype.updateAccount = function(e)
+MainAssistant.prototype.saveDB = function()
 {
-    e.item.next();
-
     this.accountsDB.add(
         "accountsList",
         this.accounts,
         function() { Mojo.Log.error("........","accountsList saved OK"); },
         function(transaction,result) { Mojo.Controller.errorDialog("Database save error (#" + result.message + ") - can't save accounts list."); }
     );
+}
+
+MainAssistant.prototype.updateAccount = function(e)
+{
+    e.item.next();
+
+    this.saveDB();
 
     $('accountsList').mojo.noticeUpdatedItems(e.index, [e.item]);
 };
 
 MainAssistant.prototype.addAccount = function(e)
 {
-    Mojo.Log.error("add", e);
+    this.controller.stageController.pushScene(
+        'editAccount',
+        this.accountsDB,
+        this.accounts);
 };
 
 MainAssistant.prototype.delAccount = function(e)
 {
-    this.accounts.remove(e.index);
+    delete this.accounts[e.index];
+    this.saveDB();
 };
+
+MainAssistant.prototype.cleanup = function(event)
+{
+    this.stopTimer();
+}
