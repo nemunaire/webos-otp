@@ -85,8 +85,8 @@ MainAssistant.prototype.updateList = function(l)
 MainAssistant.prototype.useDefaultList = function()
 {
     this.accounts = [
-        new Account("hotp", "Test-HOTP", "12345678901234567890"),
-        new Account("totp", "Test-TOTP", "12345678901234567890")
+/*        new Account("hotp", "Test-HOTP", "12345678901234567890"),
+        new Account("totp", "Test-TOTP", "12345678901234567890")*/
     ];
 
     this.loadList();
@@ -127,13 +127,13 @@ MainAssistant.prototype.stopTimer = function()
 
 MainAssistant.prototype.activate = function(event)
 {
-    Mojo.Log.error("reactive");
+    //Mojo.Log.error("reactive");
     this.loadList();
 }
 
 MainAssistant.prototype.deactivate = function(event)
 {
-    Mojo.Log.error("desactive");
+    //Mojo.Log.error("desactive");
     this.stopTimer();
 }
 

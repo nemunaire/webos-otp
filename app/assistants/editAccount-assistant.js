@@ -79,6 +79,15 @@ EditAccountAssistant.prototype.setup = function()
         this.digitsModel = { value: 6 }
     );
 
+    this.controller.setupWidget(
+        'pc',
+        {
+            autoReplace: false,
+            changeOnKeyPress: true
+        },
+        this.periodOrStart = { value: 30 }
+    );
+
     //Buttons
     this.controller.setupWidget(
         'addButton',
@@ -101,6 +110,10 @@ EditAccountAssistant.prototype.setup = function()
         Mojo.Event.propertyChange,
         this.chAccount.bind(this));
     this.controller.listen(
+        this.controller.get("servicesList"),
+        Mojo.Event.propertyChange,
+        this.serviceChange.bind(this));
+    this.controller.listen(
         this.controller.get("addButton"),
         Mojo.Event.tap,
         this.addAccount.bind(this));
@@ -122,6 +135,22 @@ EditAccountAssistant.prototype.chAccount = function(e)
     this.controller.modelChanged(this.addBtModel);
 };
 
+EditAccountAssistant.prototype.serviceChange = function(e)
+{
+    if (this.servicesModel.value == 1 || this.servicesModel.value == 4)
+    {
+	this.controller.get("pcLabel").innerHTML = 'Start';
+	this.periodOrStart.value = 1;
+	this.controller.modelChanged(this.periodOrStart);
+    }
+    else
+    {
+	this.controller.get("pcLabel").innerHTML = 'Period';
+	this.periodOrStart.value = 30;
+	this.controller.modelChanged(this.periodOrStart);
+    }
+};
+
 EditAccountAssistant.prototype.addAccount = function(e)
 {
     var a = new Account(
@@ -129,8 +158,10 @@ EditAccountAssistant.prototype.addAccount = function(e)
         $("label").mojo.getValue(),
         $("key").mojo.getValue());
     a.digits = this.digitsModel.value;
-/*    a.counter = $("pc").mojo.getValue();
-    a.period = $("pc").mojo.getValue();*/
+    if (this.servicesModel.value == 1 || this.servicesModel.value == 4)
+	a.counter = this.periodOrStart.value;
+    else
+	a.period = this.periodOrStart.value;
     this.accounts.push(a);
 
     this.accountsDB.add(
