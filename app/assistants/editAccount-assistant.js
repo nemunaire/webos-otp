@@ -157,19 +157,25 @@ EditAccountAssistant.prototype.addAccount = function(e)
         this.servicesModel.value,
         $("label").mojo.getValue(),
         $("key").mojo.getValue());
-    a.digits = this.digitsModel.value;
-    if (this.servicesModel.value == 1 || this.servicesModel.value == 4)
-	a.counter = this.periodOrStart.value;
+
+    if (a.checkKey())
+    {
+	a.digits = this.digitsModel.value;
+	if (this.servicesModel.value == 1 || this.servicesModel.value == 4)
+	    a.counter = this.periodOrStart.value;
+	else
+	    a.period = this.periodOrStart.value;
+	this.accounts.push(a);
+
+	this.accountsDB.add(
+            "accountsList",
+            this.accounts
+	);
+
+	this.controller.stageController.popScene();
+    }
     else
-	a.period = this.periodOrStart.value;
-    this.accounts.push(a);
-
-    this.accountsDB.add(
-        "accountsList",
-        this.accounts
-    );
-
-    this.controller.stageController.popScene();
+	Mojo.Controller.errorDialog("The key you specified is not valid!");
 };
 
 EditAccountAssistant.prototype.cleanup = function(event)

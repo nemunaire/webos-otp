@@ -13,6 +13,18 @@ function Account(type, label, key)
     this.current = "test";
 }
 
+Account.prototype.checkKey = function()
+{
+    var nkey;
+
+    if (this.type == 3 || this.type == 4)
+        nkey = base32.encode(base32.decode(this.key));
+    else
+        nkey = this.key;
+
+    return (nkey == this.key);
+}
+
 Account.prototype.output = function()
 {
     if (this.type == 5 || this.digits == 10)
@@ -60,7 +72,6 @@ Account.prototype.gen_hotp = function()
 
 Account.prototype.gen_totp = function()
 {
-    Mojo.Log.error(this.key)
     this.current = hotp(
         this.input(),
         Math.floor((new Date().getTime() / 1000) / this.period),
