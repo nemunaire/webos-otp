@@ -35,11 +35,14 @@ MainAssistant.prototype.setup = function()
         {
             addItemLabel: "Add account...",
             autoconfirmDelete: false,
-            itemTemplate: "first/accountTemplate",
+            itemTemplate: "main/accountTemplate",
             swipeToDelete: true,
             reorderable: false
         },
-        {});
+        {
+	    listTitle: "Accounts list",
+	    items : this.accounts
+	});
     this.controller.listen(
         this.controller.get("accountsList"),
         Mojo.Event.listTap,
