@@ -91,6 +91,8 @@ MainAssistant.prototype.updateList = function(l)
 
 MainAssistant.prototype.useDefaultList = function()
 {
+    Mojo.Log.error("Use default empty list");
+
     this.accounts = [
 /*        new Account("hotp", "Test-HOTP", "12345678901234567890"),
         new Account("totp", "Test-TOTP", "12345678901234567890")*/
