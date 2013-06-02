@@ -71,12 +71,19 @@ MainAssistant.prototype.updateList = function(l)
     {
         for (var i = 0; i < l.length; i++)
         {
-            var a = new Account(l[i].type, l[i].label, l[i].key);
-            a.digits = l[i].digits;
-            a.counter = l[i].counter;
-            a.period = l[i].period;
-            a.gen();
-            this.accounts.push(a);
+	    try
+	    {
+		var a = new Account(l[i].type, l[i].label, l[i].key);
+		a.digits = l[i].digits;
+		a.counter = l[i].counter;
+		a.period = l[i].period;
+		a.gen();
+		this.accounts.push(a);
+	    }
+	    catch(err)
+	    {
+		Mojo.Log.error(err);
+	    }
         }
         this.loadList();
     }
@@ -105,7 +112,8 @@ MainAssistant.prototype.startTimer = function()
     for (var i = 0; i < this.accounts.length; i++)
     {
         if (minPeriod > this.accounts[i].period)
-            minPeriod = this.accounts[i].period;
+	    minPeriod = this.accounts[i].period;
+
         this.accounts[i].gen()
     }
 
@@ -148,7 +156,7 @@ MainAssistant.prototype.saveDB = function()
     this.accountsDB.add(
         "accountsList",
         this.accounts,
-        function() { Mojo.Log.error("........","accountsList saved OK"); },
+        function() { Mojo.Log.error("accounts saved"); },
         function(transaction,result) { Mojo.Controller.errorDialog("Database save error (#" + result.message + ") - can't save accounts list."); }
     );
 }
@@ -172,7 +180,16 @@ MainAssistant.prototype.addAccount = function(e)
 
 MainAssistant.prototype.delAccount = function(e)
 {
-    delete this.accounts[e.index];
+    var nAccounts = [];
+
+    for (var i = 0; i < this.accounts.length; i++)
+    {
+	if (i != e.index)
+	    nAccounts.push(this.accounts[i])
+    }
+
+    this.accounts = nAccounts;
+
     this.saveDB();
 };
 
