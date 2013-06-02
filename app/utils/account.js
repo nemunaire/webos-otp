@@ -18,7 +18,11 @@ Account.prototype.checkKey = function()
     var nkey;
 
     if (this.type == 3 || this.type == 4)
+    {
+	this.key = this.key.toUpperCase();
+	this.key = this.key.replace(/ /g, '');
         nkey = base32.encode(base32.decode(this.key));
+    }
     else
         nkey = this.key;
 
